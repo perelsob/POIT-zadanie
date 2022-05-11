@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POIT'2019</title>
+    <style type="text/css">           
+    </style>
+    <script src="static/libs/jquery-1.11.1.min.js"></script>
+    <script src="static/libs/plotly-latest.min.js"></script>
+
+  <script>
+   $(document).ready(function(){
+    var layout = {
+          title: 'Output variable',
+          xaxis: {
+            title: 'time',
+            range: [0,60]
+          },
+          yaxis: {
+            title: 'ys(t) zs(t)',
+            range: [-10,10]
+          }
+        };
+
+      var zapis="1";
+      
+      $('form#emit').submit(function(event) {
+           zapis = $('#emit_value').val() ;
+          $.ajax();
+          
+          $('#log').append('"x":'+zapis +'<br>').html(); 
+          
+
+    
+        $.ajax({
+          type: "GET",
+          url: "/read/"+zapis,
+          success:function(data) 
+          { console.log(data);  
+            data = JSON.parse(data);
+            console.log(data);    
+            n = Object.keys(data).length;
+            console.log(n);
+        
+            xl = [];
+            yl = [];
+            zl = [];
+
+            for (var i=0; i< n; i++){
+              xl.push(data[i].x);
+              yl.push(data[i].y); 
+              zl.push(data[i].z);}
+           
+          trace = {
+            x: xl,
+            y: yl }; 
+            
+            
+          trace2 = {
+            x: xl,
+            y: zl,};  
+            
+        var traces = new Array();
+        traces.push(trace);
+        traces.push(trace2);
+        $('#log').append('ok'+'<br>').html(); 
+       Plotly.newPlot($('#plotdiv')[0], traces, layout);       
+          }
+        }).done(function( o ) {
+          // do something
+        });  
+        $('#log').append('dobre'+'<br>').html(); 
+          
+      });  
+        
+   });   
+
+  </script>
+</head>
+<body>
+    
+    <form id="emit" method="POST" action='#'>
+    <input type="text" name="emit_value" id="emit_value" placeholder="Poradove cislo zapisu">
+    <input type="submit" value="Echo">
+    </form>
+    
+    
+    <div id="plotdiv" style="width:600px;height:250px;"></div>
+     <div id="log"></div>
+      
+</body>
+</html> 
