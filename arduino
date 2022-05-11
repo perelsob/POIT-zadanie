@@ -24,10 +24,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-//  sensorValue = analogRead(A0);
-//  // print out the value you read:
-//  Serial.println(sensorValue);
-//  delay(500);        // delay in between reads for stability
+  sensorValue = analogRead(A0);
+  // print out the value you read:
+  Serial.println(sensorValue);
+  delay(500);        // delay in between reads for stability
 //
 //  // scan from 0 to 180 degrees
 //  for(angle = 10; angle < 180; angle++)  
