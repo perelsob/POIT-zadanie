@@ -10,7 +10,7 @@
       var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
       socket.on('connect', function() {
-        socket.emit('my_event', {data: 'I\'m connected!', value: 1}); });
+        socket.emit('my_event0', {data: 'Client connected', value: 1}); });
 
       socket.on('my_response', function(msg) {
         console.log(msg.data);
@@ -37,7 +37,11 @@
             $(this).text("Start");
           }
           return false; }); 
-          
+      
+      $('form#open').submit(function(event) {
+          socket.emit('open_event');
+          return false;});
+       
       
       $('form#disconnect').submit(function(event) {
           socket.emit('disconnect_request');
@@ -48,6 +52,12 @@
  <body>
   <h1>Flask-SocketIO Test</h1>
   <h2>Send:</h2>
+  
+  <form id="open" method="POST" action="#">
+    <input type="submit" value="Open">
+  </form> 
+  
+  
   <form id="emit" method="POST" action='#'>
     <input type="text" name="emit_value" id="emit_value" placeholder="Amplituda">
     <input type="submit" value="Echo">

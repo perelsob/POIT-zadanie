@@ -37,9 +37,10 @@ def background_thread(args):
           w = 50
           dbV = 'nieco'
         
-        #read_ser = ser.readline()
-        #y = read_ser.decode()
-        y = 30
+        read_ser = ser.readline()
+        print("ide")
+        y = read_ser.decode()
+        #y = 30
         
         print(dbV)
         print(args)
@@ -128,12 +129,20 @@ def dbdata(num):
   rv = cursor.fetchone()
   return str(rv[0])
     
+@socketio.on('my_event0', namespace='/test')
+def event0_message(message):
+    print("oooooooooooook")
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': message['data'], 'count': session['receive_count']})
+
+    
 @socketio.on('my_event', namespace='/test')
 def test_message(message):   
     session['receive_count'] = session.get('receive_count', 0) + 1 
     session['A'] = message['value']
     emit('my_response',
-         {'data': message['value'], 'count': session['receive_count']})
+         {'data': message['value'], 'count': session['receive_count']})    
 
 @socketio.on('db_event', namespace='/test')
 def db_message(message):   
@@ -141,6 +150,15 @@ def db_message(message):
     session['db_value'] = message['value']    
 #    emit('my_response',
 #         {'data': message['value'], 'count': session['receive_count']})
+
+@socketio.on('open_event', namespace='/test')
+def open_event_request():
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my_response',
+         {'data': 'Open', 'count': session['receive_count']})
+    #ser.write('open')
+
+
 
 @socketio.on('disconnect_request', namespace='/test')
 def disconnect_request():
@@ -156,7 +174,7 @@ def test_connect():
     with thread_lock:
         if thread is None:
             thread = socketio.start_background_task(target=background_thread, args=session._get_current_object())
-    emit('my_response', {'data': 'Connected', 'count': 0})
+    emit('my_response', {'data': 'Server connected', 'count': 0})
 
 
 @socketio.on('disconnect', namespace='/test')
