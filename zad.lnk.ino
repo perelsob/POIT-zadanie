@@ -17,8 +17,7 @@ void setup() {
      delay(500); 
          servo.write(90);
      delay(500); 
-         servo.write(180);
-     delay(500); 
+
 
 
 }
@@ -38,11 +37,13 @@ void loop() {
   Serial.print(";");
   Serial.println(angle);
   delay(500);        // delay in between reads for stability
+  servo.write(angle);
 }
 
 void nastavenie(){
    analogWrite(analogOutPin, 255);
    w = Serial.parseInt();  
     Serial.println(w);  
+    angle=w;
    
 }
