@@ -22,7 +22,7 @@ ser = serial.Serial("/dev/ttyS0")
 ser.boundrate = 9600
 
 open_bool=0
-w=0
+
 
 def background_thread(args):
     count = 0  
@@ -37,16 +37,14 @@ def background_thread(args):
           w = dict(args).get('w')
           dbV = dict(args).get('db_value')
         else:
-          w = 300
+          w = 30
           dbV = 'nieco'
         if open_bool>-1:
           print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-         
-          #w = 300
+
           read_ser = ser.readline()
-          print("ide")
           y = read_ser.decode()
-            #y = 30
+
             
           print(dbV)
           print(args)
@@ -160,8 +158,11 @@ def db_message(message):
 @socketio.on('open_event', namespace='/test')
 def open_event_request():
     session['receive_count'] = session.get('receive_count', 0) + 1
-    ser.write(str(w).encode('ascii'))
-    ser.write(b"/n")
+    
+    ser.write(str(session.get('w', 0)).encode('ascii'))
+    print(str(session.get('w', 0)).encode('ascii'))
+    print(session.get('w', 0))
+    
     open_bool=1
     emit('my_response',
          {'data': 'Open', 'count': session['receive_count']})
