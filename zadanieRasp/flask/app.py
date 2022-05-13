@@ -29,6 +29,7 @@ def background_thread(args):
     dataCounter = 0 
     dataList = []
     val_balik =[]
+
            
     while True:
        
@@ -36,14 +37,23 @@ def background_thread(args):
         if args:
           w = dict(args).get('w')
           dbV = dict(args).get('db_value')
+          open_bool = dict(args).get('open_bool')
         else:
           w = 30
           dbV = 'nieco'
-        if open_bool>-1:
+          open_bool = 0
+        
+#         print(args)
+#         print(open_bool)        
+#         time.sleep(1)
+        
+        if (open_bool):
           print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
 
           read_ser = ser.readline()
-          y = read_ser.decode()
+          data = read_ser.decode().split(';')
+          y = data[0]
+          angle = data[1]
 
             
           print(dbV)
@@ -79,12 +89,8 @@ def background_thread(args):
               val_balik =[]
                 
               
-            socketio.emit('my_data',{'x': count,'w': w,'y': y},namespace='/test')
+            socketio.emit('my_data',{'x': count,'w': w,'y': y,'angle': angle},namespace='/test')
      
-
-
-
-
 
 
 
@@ -135,7 +141,6 @@ def dbdata(num):
     
 @socketio.on('my_event0', namespace='/test')
 def event0_message(message):
-    print("oooooooooooook")
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': message['data'], 'count': session['receive_count']})
@@ -162,8 +167,9 @@ def open_event_request():
     ser.write(str(session.get('w', 0)).encode('ascii'))
     print(str(session.get('w', 0)).encode('ascii'))
     print(session.get('w', 0))
-    
-    open_bool=1
+
+    session['open_bool'] = 1
+
     emit('my_response',
          {'data': 'Open', 'count': session['receive_count']})
 
