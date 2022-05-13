@@ -6,8 +6,10 @@ int sensorValue=0;    //fotorezistor
 const int analogOutPin = 4; // analagovy pin LED
 int w = 300; //ziadana hodnota
 bool open = 0;   //premenna pre zacatie posielania dat
+float P = 1;
+float I = 3;
 
-
+String message;
 
 void setup() {
   
@@ -37,10 +39,31 @@ void loop() {
     }
 }
 
+String getValue(String data, char separator, int index)
+{
+    int found = 0;
+    int strIndex[] = { 0, -1 };
+    int maxIndex = data.length() - 1;
+
+    for (int i = 0; i <= maxIndex && found <= index; i++) {
+        if (data.charAt(i) == separator || i == maxIndex) {
+            found++;
+            strIndex[0] = strIndex[1] + 1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
 void nastavenie(){
    analogWrite(analogOutPin, 255);
-   w = Serial.parseInt();  
-    
+   //w = Serial.parseInt();  
+   message = Serial.readString();
+   w = getValue(message, ';', 0).toInt();
+   P = getValue(message, ';', 1).toFloat();
+   I = getValue(message, ';', 2).toFloat();
+
+   
    angle = w;
    open = 1;
    
