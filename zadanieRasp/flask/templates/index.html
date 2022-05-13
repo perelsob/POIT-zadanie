@@ -25,6 +25,7 @@
       $('form#emit').submit(function(event) {
           socket.emit('my_event', {value: $('#emit_value').val()});
           return false; });
+          
       $('#buttonVal').click(function(event) {
           //console.log($('#buttonVal').val());
           socket.emit('db_event', {value: $('#buttonVal').val()});
@@ -45,23 +46,48 @@
       
       $('form#disconnect').submit(function(event) {
           socket.emit('disconnect_request');
-          return false; });         
+          return false; });   
+          
+      $('form#emitP').submit(function(event) {
+        socket.emit('my_eventP', {value: $('#valueP').val()});
+          return false; });   
+      
+      $('form#emitI').submit(function(event) {
+        socket.emit('my_eventI', {value: $('#valueI').val()});
+          return false; });  
+          
+                
       });
     </script>
  </head>
  <body>
-  <h1>Flask-SocketIO Test</h1>
-  <h2>Send:</h2>
+  <h1>Svetelny obvod 2022</h1>
+  <h2>Nastavenia:</h2>
   
   <form id="open" method="POST" action="#">
     <input type="submit" value="Open">
   </form> 
   
-  
+  <h3>Ziadana hodnota W</h3>
   <form id="emit" method="POST" action='#'>
     <input type="text" name="emit_value" id="emit_value" placeholder="Ziadana hodnota W">
-    <input type="submit" value="Echo">
+    <input type="submit" value="Set">
   </form>
+  
+  <h3>Konstanty regulatora:</h3>
+  
+  <h4>P</h4>
+  <form id="emitP" method="POST" action='#'>
+    <input type="text" name="valueP " id="valueP" placeholder="P">
+    <input type="submit" value="Set">
+  </form>
+  
+  <h4>I</h4>
+  <form id="emitI" method="POST" action='#'>
+    <input type="text" name="valueI " id="valueI" placeholder="I">
+    <input type="submit" value="Set">
+  </form>
+  
   <button id="buttonVal" type="submit" value="start">Start</button>
   <form id="disconnect" method="POST" action="#">
     <input type="submit" value="Disconnect">
