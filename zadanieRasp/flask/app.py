@@ -183,9 +183,17 @@ def db_message(message):
 def open_event_request():
     session['receive_count'] = session.get('receive_count', 0) + 1
     
-    ser.write(str(session.get('w', 0)).encode('ascii'))
-    print(str(session.get('w', 0)).encode('ascii'))
-    print(session.get('w', 0))
+    configuration =  str(session.get('w', 0))+";"+str(session.get('P', 0))+";"+str(session.get('I', 0))
+    
+    
+    
+#     ser.write(str(session.get('w', 0)).encode('ascii'))
+#     print(str(session.get('w', 0)).encode('ascii'))
+#     print(session.get('w', 0))
+    
+    ser.write(str(configuration).encode('ascii'))
+    print(str(configuration).encode('ascii'))
+    print(configuration)
 
     session['open_bool'] = 1
 
