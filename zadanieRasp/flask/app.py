@@ -29,6 +29,7 @@ def background_thread(args):
     dataCounter = 0 
     dataList = []
     val_balik =[]
+    
 
            
     while True:
@@ -38,10 +39,14 @@ def background_thread(args):
           w = dict(args).get('w')
           dbV = dict(args).get('db_value')
           open_bool = dict(args).get('open_bool')
+          P = dict(args).get('P')
+          I = dict(args).get('I')
         else:
           w = 30
           dbV = 'nieco'
           open_bool = 0
+          P = 4
+          I = 5
         
 #         print(args)
 #         print(open_bool)        
@@ -147,11 +152,25 @@ def event0_message(message):
 
     
 @socketio.on('my_event', namespace='/test')
-def test_message(message):   
+def test_message(messageW):   
     session['receive_count'] = session.get('receive_count', 0) + 1 
-    session['w'] = message['value']
+    session['w'] = messageW['value']
     emit('my_response',
-         {'data': message['value'], 'count': session['receive_count']})    
+         {'data': messageW['value'], 'count': session['receive_count']})
+    
+@socketio.on('my_eventP', namespace='/test')
+def test_message(messageP):   
+    session['receive_count'] = session.get('receive_count', 0) + 1 
+    session['P'] = messageP['value']
+    emit('my_response',
+         {'data': messageP['value'], 'count': session['receive_count']})
+    
+@socketio.on('my_eventI', namespace='/test')
+def test_message(messageI):   
+    session['receive_count'] = session.get('receive_count', 0) + 1 
+    session['I'] = messageI['value']
+    emit('my_response',
+         {'data': messageI['value'], 'count': session['receive_count']}) 
 
 @socketio.on('db_event', namespace='/test')
 def db_message(message):   
