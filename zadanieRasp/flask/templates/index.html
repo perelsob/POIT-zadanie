@@ -19,7 +19,7 @@
         
       socket.on('my_data', function(msg) {
         console.log(msg.data);
-        $('#log').append('"x":'+msg.x+',"w":'+msg.w+ ',"y":'+msg.y+'<br>').html(); });
+        $('#log').append('"x":'+msg.x+',"w":'+msg.w+ ',"y":'+msg.y+',"angle:"'+msg.angle+'<br>').html(); });
         
 
       $('form#emit').submit(function(event) {
@@ -59,7 +59,7 @@
   
   
   <form id="emit" method="POST" action='#'>
-    <input type="text" name="emit_value" id="emit_value" placeholder="Amplituda">
+    <input type="text" name="emit_value" id="emit_value" placeholder="Ziadana hodnota W">
     <input type="submit" value="Echo">
   </form>
   <button id="buttonVal" type="submit" value="start">Start</button>
