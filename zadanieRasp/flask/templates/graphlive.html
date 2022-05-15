@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <title>Graphlive</title>
+   <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.min.js"></script>
+   <script src="static/libs/plotly-latest.min.js"></script>
+   <script type="text/javascript" charset="utf-8">
+     $(document).ready(function() {    
+      var x = new Array();
+      var y = new Array();
+      var w = new Array();
+      var angle = new Array();
+      var trace;
+      var trace2;
+      var trace3;
+      var layout;
+      
+      namespace = '/test';
+      var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+      socket.on('connect', function() {
+         });
+
+      socket.on('my_data', function(msg) {
+      console.log(msg.data);
+
+        x.push(parseFloat(msg.x));
+        y.push(parseFloat(msg.y));
+        w.push(parseFloat(msg.w));
+        angle.push(parseFloat(msg.angle));
+        
+        trace = {
+            x: x,
+            y: y,
+            name: 'Vystupna intezita y'
+        };    
+        
+        trace2 = {
+            x: x,
+            y: w,
+            name: 'Ziadana intenzita w'
+        }; 
+        
+        trace3 = {
+            x: x,
+            y: angle,
+        }; 
+        
+ 
+          
+        layout = {
+          title: 'Prechodova charakteristika intenzity svetla',
+          xaxis: {
+              title: 'cas []',
+          },
+          yaxis: {
+              title: 'intenzita [%]',
+              range: [0,1024]
+          }
+        };
+        
+        
+        layout3 = {
+          title: 'Uhol natocenia servo motora',
+          xaxis: {
+              title: 'cas []',
+          },
+          yaxis: {
+              title: 'uhol [°]',
+              range: [0,180]
+          }
+        };
+        console.log(trace);
+        var traces = new Array();
+        traces.push(trace);
+        traces.push(trace2);
+        
+        var traces3 = new Array();
+        traces3.push(trace3);
+    
+        Plotly.newPlot($('#plotdiv')[0], traces, layout); 
+        Plotly.newPlot($('#plotdiv3')[0], traces3, layout3); 
+        //addTraces               
+        });
+
+       
+      });
+    </script>
+ </head>
+ <body>
+  <h3>Graphlive</h3>
+  <div id="plotdiv" style="width:600px;height:250px;"></div>
+  
+  <div id="plotdiv3" style="width:600px;height:250px;"></div>
+
+ </body>
+</html>
