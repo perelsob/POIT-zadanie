@@ -37,6 +37,7 @@
             $(this).val("start");
             $(this).text("Start");
           }
+          socket.emit('open_event');
           return false; }); 
       
       $('form#open').submit(function(event) {
@@ -65,7 +66,7 @@
   <h2>Nastavenia:</h2>
   
   <form id="open" method="POST" action="#">
-    <input type="submit" value="Open">
+    <input type="submit" value="Open/send">
   </form> 
   
   <h3>Ziadana hodnota W</h3>
