@@ -5,9 +5,10 @@ int angle =45;
 int sensorValue=0;    //fotorezistor
 const int analogOutPin = 4; // analagovy pin LED
 int w = 300; //ziadana hodnota
-bool open = 0;   //premenna pre zacatie posielania dat
+//bool open = 0;   //premenna pre pociatocnu inicializaciu
 float P = 1;
 float I = 3;
+bool start_stop = 0; // premenna pre spustanie regulacie, odosielanie
 
 String message;
 
@@ -25,7 +26,7 @@ void loop() {
     {
       nastavenie();
     }
-  if (open)
+  if (start_stop)
     {
     delay(500);        
     sensorValue = analogRead(A0);
@@ -59,12 +60,13 @@ void nastavenie(){
    analogWrite(analogOutPin, 255);
    //w = Serial.parseInt();  
    message = Serial.readString();
-   w = getValue(message, ';', 0).toInt();
-   P = getValue(message, ';', 1).toFloat();
-   I = getValue(message, ';', 2).toFloat();
+   start_stop = (getValue(message, ';', 0)=="1");
+   w = getValue(message, ';', 1).toInt();
+   P = getValue(message, ';', 2).toFloat();
+   I = getValue(message, ';', 3).toFloat();
 
    
    angle = w;
-   open = 1;
+  // open = 1;
    
 }
