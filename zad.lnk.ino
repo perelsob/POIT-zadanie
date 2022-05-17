@@ -4,7 +4,7 @@ Servo servo;
 int angle =45;
 int sensorValue=0;    //fotorezistor
 const int analogOutPin = 4; // analagovy pin LED
-int w = 300; //ziadana hodnota
+int w = 0; //ziadana hodnota
 //bool open = 0;   //premenna pre pociatocnu inicializaciu
 float P = 1;
 float I = 3;
@@ -31,6 +31,8 @@ void loop() {
     delay(500);        
     sensorValue = analogRead(A0);
   // poslanie intenzity a uhla
+    Serial.print(w);
+    Serial.print(";");
     Serial.print(sensorValue);
     Serial.print(";");
     Serial.println(angle);
