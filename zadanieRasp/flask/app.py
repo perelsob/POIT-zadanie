@@ -80,7 +80,7 @@ def background_thread(args):
           print(args)
           
 
-          socketio.sleep(2)
+          socketio.sleep(0.5)
           count += 1
           dataCounter +=1
 
@@ -110,6 +110,12 @@ def background_thread(args):
               maxid = cursor.fetchone()
               cursor.execute("INSERT INTO graph (id, hodnoty) VALUES (%s, %s)", (maxid[0] + 1, fuj))
               db.commit()
+              
+              fo = open("static/files/test.txt","a+")
+              fo.write("%s\r\n" %fuj)
+              fo.close()
+              
+              
             dataList = []
             dataCounter = 0
 
@@ -151,6 +157,10 @@ def gauge():
 @app.route('/graph', methods=['GET', 'POST'])
 def graph():
     return render_template('graph.html', async_mode=socketio.async_mode)
+
+@app.route('/graphfile', methods=['GET', 'POST'])
+def graphfile():
+    return render_template('graphfile.html', async_mode=socketio.async_mode)
     
 @app.route('/db')
 def db():
