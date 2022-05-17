@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POIT'2019</title>
+    <style type="text/css">           
+    </style>
+    <script src="static/libs/jquery-1.11.1.min.js"></script>
+    <script src="static/libs/plotly-latest.min.js"></script>
+
+  <script>
+   $(document).ready(function(){
+    var layout = {
+          title: 'Prechodova charakteristika intenzity svetla',
+          xaxis: {
+              title: 'cas []',
+          },
+          yaxis: {
+              title: 'intenzita [%]',
+              range: [0,1024]
+          }
+        };
+        
+        
+    var  layout3 = {
+          title: 'Uhol natocenia servo motora',
+          xaxis: {
+              title: 'cas []',
+          },
+          yaxis: {
+              title: 'uhol [°]',
+              range: [0,180]
+          }
+        };
+
+      var zapis="3";
+    
+   $('form#emit').submit(function(event) {
+           zapis = $('#emit_value').val() ;
+          $.ajax();
+          
+          $('#log').append('Cislo zapisu:'+zapis +'<br>').html(); 
+          
+          
+           
+             
+    
+     $.ajax ({
+      type: "GET",
+      url: "/read/"+zapis,
+      success:function(data) 
+      { console.log(data);  
+        data = JSON.parse(data);
+        console.log(data);    
+        n = Object.keys(data).length;
+        console.log(n);
+        
+        
+        
+        xl = [];
+        yl = [];
+        wl = [];
+        anglel = [];
+
+        for (var i=0; i< n; i++){
+          xl.push(data[i].x);
+          yl.push(data[i].y);
+          wl.push(data[i].w);
+          anglel.push(data[i].angle);
+          }
+          
+        trace = {
+            x: xl,
+            y: yl,
+            name: 'Vystupna intezita y'
+        };    
+        
+        trace2 = {
+            x: xl,
+            y: wl,
+            name: 'Ziadana intenzita w'
+        }; 
+        
+        trace3 = {
+            x: xl,
+            y: anglel,
+        }; 
+        
+        console.log(trace);
+        var traces = new Array();
+        traces.push(trace);
+        traces.push(trace2);
+        
+        var traces3 = new Array();
+        traces3.push(trace3);
+    
+        Plotly.newPlot($('#plotdiv')[0], traces, layout); 
+        Plotly.newPlot($('#plotdiv3')[0], traces3, layout3);      
+   
+             //<button onClick="window.location.href='';">Refresh Page</button>
+      }
+    }).done(function( o ) 
+    
+  
+      {
+     
+         
+          
+
+       // do something
+    });  
+    
+    
+             return false; });   
+ 
+});  
+  </script>
+</head>
+<body>
+    
+    <h3>Poradove cislo zapisu</h3>
+    <form id="emit" method="POST" action='#'>
+    <input type="text" name="emit_value" id="emit_value" placeholder="Poradove cislo zapisu">
+    <input type="submit" value="Echo">
+    </form>
+    
+    <div id="plotdiv" style="width:600px;height:250px;"></div>
+    
+    <div id="plotdiv3" style="width:600px;height:250px;"></div>
+    <div id="log"></div>
+      
+</body>
+</html> 
