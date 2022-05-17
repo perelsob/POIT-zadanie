@@ -28,19 +28,27 @@ void loop() {
     }
   if (start_stop)
     {
-    delay(500);        
+      regulacia();    
+      Serial.print(";");
+      Serial.print(0); //premenna pre zapis  
+      Serial.println(";");
+    }
+}
+
+void regulacia()
+{
+    delay(500); 
+
+
     sensorValue = analogRead(A0);
+    servo.write(angle);
   // poslanie intenzity a uhla
     Serial.print(w);
     Serial.print(";");
     Serial.print(sensorValue);
     Serial.print(";");
-    Serial.println(angle);
-    
-  
-    servo.write(angle);
-    }
-}
+    Serial.print(angle);
+  }
 
 String getValue(String data, char separator, int index)
 {
@@ -69,6 +77,16 @@ void nastavenie(){
 
    
    angle = w;
-  // open = 1;
+
+   if (start_stop==0)
+    {
+      regulacia();
+      Serial.print(";");
+      Serial.print(1); //premenna pre zapis
+      Serial.println(";");
+      }
+
+
+  
    
 }
