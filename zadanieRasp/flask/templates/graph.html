@@ -12,82 +12,123 @@
   <script>
    $(document).ready(function(){
     var layout = {
-          title: 'Output variable',
+          title: 'Prechodova charakteristika intenzity svetla',
           xaxis: {
-            title: 'time',
-            range: [0,60]
+              title: 'cas []',
           },
           yaxis: {
-            title: 'ys(t) zs(t)',
-            range: [-10,10]
+              title: 'intenzita [%]',
+              range: [0,1024]
+          }
+        };
+        
+        
+    var  layout3 = {
+          title: 'Uhol natocenia servo motora',
+          xaxis: {
+              title: 'cas []',
+          },
+          yaxis: {
+              title: 'uhol [°]',
+              range: [0,180]
           }
         };
 
-      var zapis="1";
-      
-      $('form#emit').submit(function(event) {
+      var zapis="3";
+    
+   $('form#emit').submit(function(event) {
            zapis = $('#emit_value').val() ;
           $.ajax();
           
-          $('#log').append('"x":'+zapis +'<br>').html(); 
+          $('#log').append('Cislo zapisu:'+zapis +'<br>').html(); 
           
-
-    
-        $.ajax({
-          type: "GET",
-          url: "/read/"+zapis,
-          success:function(data) 
-          { console.log(data);  
-            data = JSON.parse(data);
-            console.log(data);    
-            n = Object.keys(data).length;
-            console.log(n);
-        
-            xl = [];
-            yl = [];
-            zl = [];
-
-            for (var i=0; i< n; i++){
-              xl.push(data[i].x);
-              yl.push(data[i].y); 
-              zl.push(data[i].z);}
+          
            
-          trace = {
+             
+    
+     $.ajax ({
+      type: "POST",
+      url: "/dbdata/"+zapis,
+      success:function(data) 
+      { console.log(data);  
+        data = JSON.parse(data);
+        console.log(data);    
+        n = Object.keys(data).length;
+        console.log(n);
+        
+        
+        
+        xl = [];
+        yl = [];
+        wl = [];
+        anglel = [];
+
+        for (var i=0; i< n; i++){
+          xl.push(data[i].x);
+          yl.push(data[i].y);
+          wl.push(data[i].w);
+          anglel.push(data[i].angle);
+          }
+          
+        trace = {
             x: xl,
-            y: yl }; 
-            
-            
-          trace2 = {
+            y: yl,
+            name: 'Vystupna intezita y'
+        };    
+        
+        trace2 = {
             x: xl,
-            y: zl,};  
-            
+            y: wl,
+            name: 'Ziadana intenzita w'
+        }; 
+        
+        trace3 = {
+            x: xl,
+            y: anglel,
+        }; 
+        
+        console.log(trace);
         var traces = new Array();
         traces.push(trace);
         traces.push(trace2);
-        $('#log').append('ok'+'<br>').html(); 
-       Plotly.newPlot($('#plotdiv')[0], traces, layout);       
-          }
-        }).done(function( o ) {
-          // do something
-        });  
-        $('#log').append('dobre'+'<br>').html(); 
-          
-      });  
         
-   });   
+        var traces3 = new Array();
+        traces3.push(trace3);
+    
+        Plotly.newPlot($('#plotdiv')[0], traces, layout); 
+        Plotly.newPlot($('#plotdiv3')[0], traces3, layout3);      
+   
+             //<button onClick="window.location.href='';">Refresh Page</button>
+      }
+    }).done(function( o ) 
+    
+  
+      {
+     
+         
+          
 
+       // do something
+    });  
+    
+    
+             return false; });   
+ 
+});  
   </script>
 </head>
 <body>
     
+    <h3>Poradove cislo zapisu</h3>
     <form id="emit" method="POST" action='#'>
     <input type="text" name="emit_value" id="emit_value" placeholder="Poradove cislo zapisu">
     <input type="submit" value="Echo">
     </form>
     
-    
     <div id="plotdiv" style="width:600px;height:250px;"></div>
-     <div id="log"></div>
+    
+    <div id="plotdiv3" style="width:600px;height:250px;"></div>
+    <div id="log"></div>
       
 </body>
 </html> 
