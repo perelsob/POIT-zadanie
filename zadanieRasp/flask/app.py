@@ -42,7 +42,7 @@ def background_thread(args):
           P = dict(args).get('P')
           I = dict(args).get('I')
         else:
-          w = 30
+          w = 30   #w zelana hodnota posielana do arduina
           open_bool = 0
           P = 4
           I = 5
@@ -57,12 +57,13 @@ def background_thread(args):
 
           read_ser = ser.readline()
           data = read_ser.decode().split(';')
-          y = data[0]
-          angle = data[1]
+          z = data[0] #aktualna zelana hodnota prijata z arduina
+          y = data[1]
+          angle = data[2]
 
        
           print(args)
-          print(w)
+          
 
           socketio.sleep(2)
           count += 1
@@ -77,7 +78,7 @@ def background_thread(args):
        
           dataList.append(dataDict)
               
-          val = '{"x": ' + str(count) + ',"w": ' + str(w)+',"y": ' + str(y) + '}'
+          val = '{"x": ' + str(count) + ',"w": ' + str(z)+',"y": ' + str(y) + '}'
           val_balik.append(val)
               
 #           else:
@@ -89,7 +90,7 @@ def background_thread(args):
                 
               fo.write("%s\r\n" %val_balik)
               val_balik =[]
-          socketio.emit('my_data',{'x': count,'w': w,'y': y,'angle': angle},namespace='/test')
+          socketio.emit('my_data',{'x': count,'w': z,'y': y,'angle': angle},namespace='/test')
      
 
 
@@ -180,8 +181,8 @@ def db_message(message):
     print(session['db_value']=='start')
     print(str(session.get('db_value', 0)))
     print("----------------------")
-#    emit('my_response',
-#         {'data': message['value'], 'count': session['receive_count']})
+    emit('my_response',
+         {'data': message['value'], 'count': session['receive_count']})
 
 @socketio.on('open_event', namespace='/test')
 def open_event_request():
@@ -207,7 +208,7 @@ def open_event_request():
     session['open_bool'] = 1
 
     emit('my_response',
-         {'data': 'Open', 'count': session['receive_count']})
+         {'data': 'send', 'count': session['receive_count']})
 
 
 
