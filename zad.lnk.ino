@@ -1,16 +1,25 @@
 #include <Servo.h>
 
 Servo servo;
-int angle =45;
+int angle =0;
 int sensorValue=0;    //fotorezistor
 const int analogOutPin = 4; // analagovy pin LED
 int w = 0; //ziadana hodnota
-//bool open = 0;   //premenna pre pociatocnu inicializaciu
-float P = 1;
-float I = 3;
+//parametre regulatora
+float P = 0.04;     
+float I = 0.02;
 bool start_stop = 0; // premenna pre spustanie regulacie, odosielanie
+float y = 0;    //vystupna intenzita
 
-String message;
+unsigned long currentTime, previousTime;
+double elapsedTime;
+float error;
+float lastError;
+float cumError;
+
+String message;   
+
+//testovacia sprava 1;70;0.0001;0.0002
 
 void setup() {
   
@@ -28,28 +37,50 @@ void loop() {
     }
   if (start_stop)
     {
-      regulacia();    
+      vypis();    
       Serial.print(";");
       Serial.print(0); //premenna pre zapis  
       Serial.println(";");
+      regulacia();
+      servo.write(angle);
     }
 }
 
-void regulacia()
+void regulacia(){
+  currentTime = millis();
+  
+  elapsedTime = (double)(currentTime - previousTime);        //compute time elapsed from previous computation
+  error = w - y;                                // determine error
+  cumError += error * elapsedTime;                // compute integral
+  angle = P*error + I*cumError;                //PI output               
+  lastError = error;                                //remember current error
+  previousTime = currentTime;  
+
+//ohranicenie akcneho zasahu
+  if (angle>90)
+    {angle = 90;}
+  else if(angle<0)
+    {angle = 0;}
+  
+}
+
+void vypis()
 {
     delay(500); 
-
-
     sensorValue = analogRead(A0);
-    servo.write(angle);
+    y = map(sensorValue,180,670,0,100); //prepocitanie intenzity na percenta
+    if (y>100)  //ohranicenie
+      {y = 100;}
+    else if (y<0)
+      {y = 0;}
   // poslanie intenzity a uhla
     Serial.print(w);
     Serial.print(";");
-    Serial.print(sensorValue);
+    Serial.print(y);
     Serial.print(";");
     Serial.print(angle);
   }
-
+//funkcia pre rozsekanie prijatych sprav
 String getValue(String data, char separator, int index)
 {
     int found = 0;
@@ -68,19 +99,19 @@ String getValue(String data, char separator, int index)
 
 void nastavenie(){
    analogWrite(analogOutPin, 255);
-   //w = Serial.parseInt();  
+   cumError =0; //vynulovanie komulativnej chyby
+ 
    message = Serial.readString();
    start_stop = (getValue(message, ';', 0)=="1");
    w = getValue(message, ';', 1).toInt();
    P = getValue(message, ';', 2).toFloat();
    I = getValue(message, ';', 3).toFloat();
 
-   
-   angle = w;
+
 
    if (start_stop==0)
     {
-      regulacia();
+      vypis();
       Serial.print(";");
       Serial.print(1); //premenna pre zapis
       Serial.println(";");
