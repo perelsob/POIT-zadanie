@@ -14,11 +14,11 @@
     var layout = {
           title: 'Prechodova charakteristika intenzity svetla',
           xaxis: {
-              title: 'cas []',
+              title: 'cislo vzorky [1 vzorka 500ms]',
           },
           yaxis: {
               title: 'intenzita [%]',
-              range: [0,1024]
+              range: [0,100]
           }
         };
         
@@ -26,15 +26,15 @@
     var  layout3 = {
           title: 'Uhol natocenia servo motora',
           xaxis: {
-              title: 'cas []',
+              title: 'cislo vzorky [1 vzorka 500ms]',
           },
           yaxis: {
               title: 'uhol [°]',
-              range: [0,180]
+              range: [0,90]
           }
         };
 
-      var zapis="3";
+      var zapis="30";
     
    $('form#emit').submit(function(event) {
            zapis = $('#emit_value').val() ;
@@ -125,9 +125,9 @@
     <input type="submit" value="Echo">
     </form>
     
-    <div id="plotdiv" style="width:600px;height:250px;"></div>
+    <div id="plotdiv" style="width:800px;height:450px;"></div>
     
-    <div id="plotdiv3" style="width:600px;height:250px;"></div>
+    <div id="plotdiv3" style="width:800px;height:450px;"></div>
     <div id="log"></div>
       
 </body>
