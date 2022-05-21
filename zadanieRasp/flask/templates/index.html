@@ -56,7 +56,20 @@
       $('form#emitI').submit(function(event) {
         socket.emit('my_eventI', {value: $('#valueI').val()});
           return false; });  
-          
+         
+      var slider = document.getElementById("emit_value");
+      var output = document.getElementById("demo");
+      var w = slider.value*5
+      output.innerHTML = w; // Display the default slider value
+      socket.emit('my_event',  {value: w});
+
+      // Update the current slider value (each time you drag the slider handle) 
+      slider.oninput = function() {
+      w = slider.value*5
+      output.innerHTML = w;
+      socket.emit('my_event',  {value: w});
+      }
+         
                 
       });
     </script>
@@ -69,11 +82,19 @@
     <input type="submit" value="Open/send">
   </form> 
   
-  <h3>Ziadana hodnota W</h3>
+  <h3>Ziadana hodnota intenzity svetla w [%]</h3>
+<!--
   <form id="emit" method="POST" action='#'>
     <input type="text" name="emit_value" id="emit_value" placeholder="Ziadana hodnota W">
     <input type="submit" value="Set">
   </form>
+-->
+  
+  <div class="slidecontainer">
+  <input type="range" min="0" max="20" value="10" class="slider" id="emit_value">
+  </div>
+  
+  <p id="demo"></p>
   
   <h3>Konstanty regulatora:</h3>
   
