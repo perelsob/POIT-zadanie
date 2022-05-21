@@ -52,11 +52,11 @@
         layout = {
           title: 'Prechodova charakteristika intenzity svetla',
           xaxis: {
-              title: 'cas []',
+              title: 'cislo vzorky [1 vzorka 500ms]',
           },
           yaxis: {
               title: 'intenzita [%]',
-              range: [0,1024]
+              range: [0,100]
           }
         };
         
@@ -64,11 +64,11 @@
         layout3 = {
           title: 'Uhol natocenia servo motora',
           xaxis: {
-              title: 'cas []',
+              title: 'cislo vzorky [1 vzorka 500ms]',
           },
           yaxis: {
               title: 'uhol [°]',
-              range: [0,180]
+              range: [0,90]
           }
         };
         console.log(trace);
@@ -90,9 +90,9 @@
  </head>
  <body>
   <h3>Graphlive</h3>
-  <div id="plotdiv" style="width:600px;height:250px;"></div>
+  <div id="plotdiv" style="width:800px;height:450px;"></div>
   
-  <div id="plotdiv3" style="width:600px;height:250px;"></div>
+  <div id="plotdiv3" style="width:800px;height:450px;"></div>
 
  </body>
 </html>
