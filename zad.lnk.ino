@@ -9,6 +9,7 @@ int w = 0; //ziadana hodnota
 float P = 0.04;     
 float I = 0.02;
 bool start_stop = 0; // premenna pre spustanie regulacie, odosielanie
+bool open_bool = 0;  //inicializacia, deaktivacia
 float y = 0;    //vystupna intenzita
 
 unsigned long currentTime, previousTime;
@@ -35,7 +36,7 @@ void loop() {
     {
       nastavenie();
     }
-  if (start_stop)
+  if (start_stop && open_bool)
     {
       vypis();    
       Serial.print(";");
@@ -98,25 +99,34 @@ String getValue(String data, char separator, int index)
 }
 
 void nastavenie(){
-   analogWrite(analogOutPin, 255);
+   
    cumError =0; //vynulovanie komulativnej chyby
  
    message = Serial.readString();
-   start_stop = (getValue(message, ';', 0)=="1");
-   w = getValue(message, ';', 1).toInt();
-   P = getValue(message, ';', 2).toFloat();
-   I = getValue(message, ';', 3).toFloat();
+   open_bool = (getValue(message, ';', 0)=="1");
+   start_stop = (getValue(message, ';', 1)=="1");
+   w = getValue(message, ';', 2).toInt();
+   P = getValue(message, ';', 3).toFloat();
+   I = getValue(message, ';', 4).toFloat();
 
+   if(open_bool)
+   {
+    analogWrite(analogOutPin, 255);
 
-
-   if (start_stop==0)
-    {
+    if (start_stop==0)
+      {
       vypis();
       Serial.print(";");
       Serial.print(1); //premenna pre zapis
       Serial.println(";");
       }
+   }
 
+   else
+   {
+    analogWrite(analogOutPin, 0);
+    servo.write(0);
+    }
 
   
    
