@@ -175,7 +175,7 @@ def dbdata(num):
   db = MySQLdb.connect(host=myhost,user=myuser,passwd=mypasswd,db=mydb)
   cursor = db.cursor()
   print(num)
-  cursor.execute("SELECT hodnoty FROM  graph WHERE id=%s", num)
+  cursor.execute("SELECT hodnoty FROM  graph WHERE id="+ num)
   rv = cursor.fetchone()
   return str(rv[0])
     
@@ -222,12 +222,13 @@ def db_message(message):
 def open_event_request():
     session['receive_count'] = session.get('receive_count', 0) + 1
     
+    session['open_bool'] = 1
     configuration =  str(session.get('w', 0))+";"+str(session.get('P', 0))+";"+str(session.get('I', 0))
     
     if (str(session.get('db_value', 0))=='start'):
-        configuration = "1;" + configuration
+        configuration = str(session.get('open_bool', 0))+";"+"1;" + configuration
     else:
-        configuration = "0;" + configuration
+        configuration = str(session.get('open_bool', 0))+";"+"0;" + configuration
     
     
     
@@ -238,8 +239,7 @@ def open_event_request():
     ser.write(str(configuration).encode('ascii'))
     print(str(configuration).encode('ascii'))
     print(str(configuration))
-
-    session['open_bool'] = 1
+    
 
     emit('my_response',
          {'data': 'send', 'count': session['receive_count']})
@@ -252,6 +252,11 @@ def disconnect_request():
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my_response',
          {'data': 'Disconnected!', 'count': session['receive_count']})
+    
+    session['open_bool'] = 0
+    configuration =  str(session.get('w', 0))+";"+str(session.get('P', 0))+";"+str(session.get('I', 0))
+    configuration = str(session.get('open_bool', 0))+";"+"0;" + configuration
+    ser.write(str(configuration).encode('ascii'))
     ser.close()
     disconnect()
 
